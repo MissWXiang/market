@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>修改密码</title>
+    <!-- elementui.css -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <!-- vue.js -->
+    <script src="js/vue2.5.16.js"></script>
+    <!-- elementui.js -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="/market/css/admin_edit.css">
+    <!-- 引入用户信息 -->
+    <script src="/market/api/checklogin.php"></script>
+    <!-- 设置session -->
+    <script src="/market/api/checklogin.php"></script>
+</head>
+
+<body>
+    <!-- dom -->
+    <div id="app">
+
+        <el-container>
+            <!-- 右侧头部 -->
+            <el-header height="100px">
+                <h1>欢迎您 admin</h1>
+                <p>修改账号密码</p>
+            </el-header>
+            <!-- 右侧主体 -->
+            <el-main>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>修改密码</span>
+                    </div>
+                    <div class="text item">
+                        <p>
+                            <span>*</span>原密码：
+                            <el-input v-model="oldpwd" placeholder="原密码" ></el-input>
+                        </p>
+                        <p>
+                            <span>*</span>新密码：
+                            <el-input v-model="newpwd" placeholder="新密码" ></el-input>
+                        </p>
+                        <p>
+                            <span>*</span>确认新密码：
+                            <el-input v-model="cnewpwd" placeholder="确认新密码"></el-input>
+                        </p>
+                        <el-button type="success" @click="editpwd">修改密码</el-button>
+                    </div>
+                </el-card>
+            </el-main>
+            <!-- 右侧尾部 -->
+            <el-footer>
+                &copy; Copyright 2018 华联超市管理系统
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- js -->
+    <script>
+        new Vue({
+            el: '#app',
+            data:{
+                oldpwd: '',
+                newpwd: '',
+                cnewpwd: ''            
+            },
+            methods:{
+                editpwd:function(){  
+                    //获取密码值
+                    var oldpwd = this.oldpwd;
+                    var newpwd = this.newpwd;
+                    //发起ajax请求
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("post","/market/api/admin_pwd.php");
+                    xhr.onreadystatechange = function(){
+                        if(xhr.readyState === 4 && xhr.status ===200){
+                            var data = JSON.parse(xhr.responseText);
+                            if(data.errcode === "200"){
+                                alert(data.msg);
+                                location.href = "/market/admin.html";
+                            }else{
+                                alert(data.msg);
+                            }
+                        }
+                    }
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send(`oldpwd=${oldpwd}&newpwd=${newpwd}`);                  
+                }
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

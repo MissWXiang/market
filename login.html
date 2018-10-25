@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>华联超市登录</title>
+    <!-- 引入Vue -->
+    <script src="js/vue2.5.16.js"></script>
+    <style>
+        html,body{height:100%;margin:0;padding:0;background: rgba(0, 0, 0, 0.4)}
+        #box{position:fixed;right:36%;top:30%;background: #fff;padding:20px 40px;text-align:center;border-radius:10px;}
+        #box input{outline:none;height:36px;line-height:36px;width: 300px;}
+        #box .ic1{text-indent: 44px;background: url(./images/03-login.jpg) no-repeat;}
+        #box .ic2{text-indent: 44px;background: url(./images/04-login.jpg) no-repeat;}
+        #box #btn{font-size:16px;cursor:pointer;border:0;width: 100px;background: #6aae00;color: #fff;height:30px;line-height:30px;}
+    </style>
+</head>
+<body>
+    <div id="box">
+        <h1>超市管理系统登录</h1>
+        <p><input type="text" name="username" v-model="username" class="ic1" /></p>
+        <p><input type="password" name="password" v-model="password" class="ic2" /></p>
+        <p><input type="button" value="免费登录" id="btn" @click="checklogin()" /></p>   
+    </div>
+    <script>
+        
+    //挂载到Vue上
+    var app = new Vue({
+        el:"#box",
+        data:{
+            username:"",
+            password:""
+        },
+        methods:{
+            checklogin:function(){              
+                var username = this.username;
+                var password = this.password;
+                //ajax请求
+                var xhr = new XMLHttpRequest();
+                xhr.open("post","/market/api/login.php");
+                xhr.onreadystatechange = function(){
+                    if(xhr.readyState==4 && xhr.status==200){
+                        var date = JSON.parse(xhr.responseText);
+                        if(date.errcode == "1"){
+                            alert(date.msg);
+                            location.href = "./index.html";
+                        }else{
+                            alert(date.msg);
+                        }
+                    }
+                }
+                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                xhr.send(`username=${username}&password=${password}`);
+            }
+        }
+
+    });
+    
+    
+    </script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>管理首页</title>
+    <!-- elementui.css -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <!-- vue.js -->
+    <script src="js/vue2.5.16.js"></script>
+    <!-- elementui.js -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <!-- 设置session -->
+    <script src="/market/api/checklogin.php"></script>
+</head>
+
+<body>
+    <!-- dom -->
+    <div id="app">
+        <el-container>
+            <!-- 右侧头部 -->
+            <el-header height="100px">
+                <h1>欢迎您 {{usernames}}</h1>
+                <p>查看详细的系统信息</p>
+            </el-header>
+            <!-- 右侧主体 -->
+            <el-main>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>系统信息</span>
+                    </div>
+                    <div class="text item">
+                        <!-- 提示信息 -->
+                        <p>
+                            <el-alert title="商品总数：5.已经销售的总金额：9000.库存商品总价：123" type="success" show-icon>
+                            </el-alert>
+                        </p>
+                        <p>
+                            <el-alert title="导入数据" type="success" show-icon>
+                            </el-alert>
+                        </p>
+                        <!-- 两个表格 -->
+                        <el-row :gutter="30">
+                            <el-col :span="12">
+                                <div class="grid-content bg-purple">
+                                    <!-- 左边表格 -->
+                                    <el-card class="box-card">
+                                        <div slot="header" class="clearfix">
+                                            <span>销售排行</span>
+                                        </div>
+                                        <div class="text item">
+                                            <el-table :data="tableData" style="width: 100%">
+                                                <el-table-column prop="name" label="商品名称">
+                                                </el-table-column>
+
+                                                <el-table-column prop="num" label="销量">
+                                                </el-table-column>
+                                            </el-table>
+                                        </div>
+                                    </el-card>
+                                </div>
+                            </el-col>
+
+                            <el-col :span="12">
+                                <div class="grid-content bg-purple-light">
+                                    <!-- 右边表格 -->
+                                    <el-card class="box-card">
+                                        <div slot="header" class="clearfix">
+                                            <span>缺货的商品</span>
+                                        </div>
+                                        <div class="text item">
+                                            <el-table :data="tableData" style="width: 100%">
+                                                <el-table-column prop="name" label="商品名称">
+                                                </el-table-column>
+
+                                                <el-table-column prop="num" label="销量">
+                                                </el-table-column>
+                                            </el-table>
+                                        </div>
+                                    </el-card>
+                                </div>
+                            </el-col>
+                        </el-row>
+                    </div>
+                </el-card>
+            </el-main>
+            <!-- 右侧尾部 -->
+            <el-footer>
+                &copy; Copyright 2018 华联超市管理系统
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- js -->
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                tableData: [{
+                    name: '茅台酒',
+                    num: 50
+                }, {
+                    name: '芙蓉王',
+                    num: 10
+                }, {
+                    name: '挂面',
+                    num: 500
+                }],
+                usernames:""
+            },
+            mounted() {
+                var _that = this;
+                var xhr = new XMLHttpRequest();
+                xhr.open("get", "/market/api/checklogins.php")
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var data = xhr.responseText;
+                        //console.log(data);
+                        _that.usernames = data;
+                    }
+                }
+                xhr.send();
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

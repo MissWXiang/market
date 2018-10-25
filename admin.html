@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>账号管理</title>
+    <!-- elementui.css -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <!-- vue.js -->
+    <script src="js/vue2.5.16.js"></script>
+    <!-- elementui.js -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="/market/css/admin.css">
+    <!-- 设置session -->
+    <script src="/market/api/checklogin.php"></script>
+</head>
+
+<body>
+    <!-- dom -->
+    <div id="app">
+
+        <el-container>
+            <!-- 右侧头部 -->
+            <el-header height="100px">
+                <h1>欢迎您 admin</h1>
+                <p>查看所有员管理账号</p>
+            </el-header>
+            <!-- 右侧主体 -->
+            <el-main>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>账号管理</span>
+                    </div>
+                    <div class="text item">
+                        <el-table :data="tableData" style="width: 100%">
+                            <el-table-column label="用户名称">
+                                <template slot-scope="scope">
+                                    <span style="margin-left: 10px">{{ scope.row.username }}</span>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="用户组">
+                                <template slot-scope="scope">
+                                    <div slot="reference" class="name-wrapper">
+                                        <el-tag size="medium">{{ scope.row.usergroup }}</el-tag>
+                                    </div>
+                                </template>
+                            </el-table-column>
+                            <el-table-column label="管理">
+                                <template slot-scope="scope">
+                                    <el-button size="mini" @click="edit(scope.row.id)">编辑</el-button>
+                                    <el-button size="mini" type="danger" @click="del(scope.row.id)">删除</el-button>
+                                </template>
+                            </el-table-column>
+                        </el-table>
+                    </div>
+                </el-card>
+            </el-main>
+            <!-- 右侧尾部 -->
+            <el-footer>
+                &copy; Copyright 2018 华联超市管理系统
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- js -->
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                tableData: []
+            },
+            mounted() {
+                //保存this
+                var _that = this;
+                //发起请求
+                var xhr = new XMLHttpRequest();
+                xhr.open("get", "/market/api/admin.php");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        _that.tableData = data;
+                    }
+                }
+                xhr.send();
+            },
+            methods: {
+                del: function (id) {
+                    _that = this;
+                    //发起ajax请求
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("get", "/market/api/admin_del.php?id=" + id);
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var data = xhr.responseText;
+                            if (data === "1") {
+                                alert("删除成功！！！");
+                                _that.showAll();
+                            } else {
+                                alert("删除失败！");
+                            }
+                        }
+                    }
+                    xhr.send();
+                },
+                edit: function (id) {
+                    location.href = "/market/admin_edit.html?id=" + id;
+                },
+                showAll: function () {
+                    // 把this保留  this指向vue实例
+                    var _that = this;
+                    // 发送ajax请求 获取数据 渲染账号列表
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("get", "/market/api/admin.php");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var data = JSON.parse(xhr.responseText);
+                            _that.tableData = data;
+                        }
+                    }
+                    xhr.send();
+                }
+            },
+            mounted() {
+                this.showAll();
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

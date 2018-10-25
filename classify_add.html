@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>添加分类</title>
+    <!-- elementui.css -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <!-- vue.js -->
+    <script src="js/vue2.5.16.js"></script>
+    <!-- elementui.js -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="/market/css/classify_add.css">
+    <!-- 设置session -->
+    <script src="/market/api/checklogin.php"></script>
+</head>
+
+<body>
+    <!-- dom -->
+    <div id="app">
+
+        <el-container>
+            <!-- 右侧头部 -->
+            <el-header height="100px">
+                <h1>欢迎您 admin</h1>
+                <p>查看和管理所有分类</p>
+            </el-header>
+            <!-- 右侧主体 -->
+            <el-main>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>添加分类</span>
+                    </div>
+                    <div class="text item">
+                        <p>
+                            所属分类：
+                            <br />
+                            <el-select v-model="classify">
+                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </p>
+                        <p>
+                            <b>*</b>分类名称:
+                            <el-input v-model="name"></el-input>
+                        </p>
+                        <p>
+                            状态:
+                            <br />
+                            <el-radio v-model="state" label="1">启用</el-radio>
+                            <el-radio v-model="state" label="0">禁用</el-radio>
+                        </p>
+                        <el-button type="success" @click="classify_add">添加</el-button>
+                    </div>
+                </el-card>
+            </el-main>
+            <!-- 右侧尾部 -->
+            <el-footer>
+                &copy; Copyright 2018 华联超市管理系统
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- js -->
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                classify: "",
+                name: "",               
+                state:"",
+                options: [{
+                    value: '0',
+                    label: '---顶级分类---'
+                }]
+            },
+            methods:{
+                classify_add:function(){
+                    var parentid = this.classify;
+                    var name = this.name;
+                    var state = this.state;
+                    //console.log(classify,name,state)
+                    //发起ajax请求
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("post","/market/api/classify_add.php");
+                    xhr.onreadystatechange = function(){
+                        if(xhr.readyState === 4 && xhr.status ===200){
+                            var data = xhr.responseText;
+                            //console.log(data);
+                            if(data === "1"){
+                                alert("添加成功");
+                                location.href = "/market/classify.html";
+                            }else{
+                                alert("添加失败");
+                            }
+                        }
+                    }
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send(`parentid=${parentid}&name=${name}&state=${state}`);
+                }
+            },
+            mounted(){
+                //保存this
+                var _that = this;
+                //发起请求
+                var xhr = new XMLHttpRequest();
+                xhr.open("get", "/market/api/classify.php");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        //console.log(data);
+                        _that.options = _that.options.concat(data);
+                    }
+                }
+                xhr.send();
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

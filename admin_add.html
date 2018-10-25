@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>添加账号</title>
+    <!-- elementui.css -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <!-- vue.js -->
+    <script src="js/vue2.5.16.js"></script>
+    <!-- elementui.js -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="/market/css/admin_add.css">
+    <!-- 设置session -->
+    <script src="/market/api/checklogin.php"></script>
+</head>
+
+<body>
+    <!-- dom -->
+    <div id="app">
+
+        <el-container>
+            <!-- 右侧头部 -->
+            <el-header height="100px">
+                <h1>欢迎您 admin</h1>
+                <p>添加管理账号</p>
+            </el-header>
+            <!-- 右侧主体 -->
+            <el-main>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>添加账号</span>
+                    </div>
+                    <div class="text item">
+                        <p>
+                            <span>*</span>用户名：
+                            <el-input v-model="username" placeholder="请输入用户名"></el-input>
+                        </p>
+                        <p>
+                            <span>*</span>密码：
+                            <el-input type="password" v-model="pwd" placeholder="密码"></el-input>
+                        </p>
+                        <p>
+                            <span>*</span>确认密码：
+                            <el-input type="password" v-model="cpwd" placeholder="确认密码"></el-input>
+                        </p>
+                        <p>
+                            <span>*</span>请选择用户组：
+                            <br />
+                            <el-select v-model="value" placeholder="请选择">
+                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </p>
+                        <el-button type="success" @click="add">添加账号</el-button>
+                    </div>
+                </el-card>
+            </el-main>
+            <!-- 右侧尾部 -->
+            <el-footer>
+                &copy; Copyright 2018 华联超市管理系统
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- js -->
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                username: '',
+                pwd: '',
+                cpwd: '',
+                value: '',
+                options: [{
+                    value: '超级管理员',
+                    label: '超级管理员'
+                }, {
+                    value: '普通管理员',
+                    label: '普通管理员'
+                }, {
+                    value: '普通用户',
+                    label: '普通用户'
+                }]
+            },
+            methods:{
+                add:function(){
+                    var username = this.username;
+                    var pwd = this.pwd;
+                    var usergroup = this.value;
+                    // console.log(username,pwd,usergroup);
+                    //发起ajax请求
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("post","/market/api/admin_add.php");
+                    xhr.onreadystatechange = function(){
+                        if(xhr.readyState === 4 && xhr.status ===200){
+                            var data = xhr.responseText;
+                            if(data === "1"){
+                                alert("添加成功");
+                                location.href = "/market/admin.html";
+                            }else{
+                                alert("添加失败");
+                            }
+                        }
+                    }
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send(`username=${username}&pwd=${pwd}&usergroup=${usergroup}`);
+                }
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

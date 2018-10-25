@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>添加商品</title>
+    <!-- elementui.css -->
+    <link rel="stylesheet" href="node_modules/element-ui/lib/theme-chalk/index.css">
+    <!-- vue.js -->
+    <script src="js/vue2.5.16.js"></script>
+    <!-- elementui.js -->
+    <script src="node_modules/element-ui/lib/index.js"></script>
+    <link rel="stylesheet" href="/market/css/goods_add.css">
+    <!-- 设置session -->
+    <script src="/market/api/checklogin.php"></script>
+</head>
+
+<body>
+    <!-- dom -->
+    <div id="app">
+
+        <el-container>
+            <!-- 右侧头部 -->
+            <el-header height="100px">
+                <h1>欢迎您 admin</h1>
+                <p>1.你可以在这里添加新的商品或者编辑已有的商品。2.新添加商品的时候可以同时进行入库(入库必须有数量和进价)!3.带
+                    <span>*</span>的项目必填</p>
+            </el-header>
+            <!-- 右侧主体 -->
+            <el-main>
+                <el-card class="box-card">
+                    <div slot="header" class="clearfix">
+                        <span>添加商品</span>
+                    </div>
+                    <div class="text item">
+                        <p>
+                            <b>*</b>所属分类：
+                            <br />
+                            <el-select v-model="cateid">
+                                <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
+                                </el-option>
+                            </el-select>
+                        </p>
+                        <p>
+                            <b>*</b>商品条形码:
+                            <el-input v-model="code"></el-input>
+                        </p>
+                        <p>
+                            <b>*</b>商品名称:
+                            <el-input v-model="name"></el-input>
+                        </p>
+                        <p>
+                            <b>*</b>商品售价:
+                            <el-input v-model="saleprice"></el-input>
+                        </p>
+                        <p>
+                            市场价:
+                            <el-input v-model="marketprice"></el-input>
+                            默认市场价为售价的1.2倍
+                        </p>
+                        <p>
+                            商品进价:
+                            <el-input v-model="costprice"></el-input>
+                        </p>
+                        <p>
+                            入库数量:
+                            <el-input v-model="num"></el-input>
+                            记重商品单位为千克
+                        </p>
+                        <p>
+                            商品重量:
+                            <el-input v-model="weight"></el-input>
+                        </p>
+                        <p>
+                            商品单位:
+                            <el-input v-model="unit"></el-input>
+                        </p>
+                        <p>
+                            会员优惠:
+                            <br />
+                            <el-radio v-model="perferential" label="1">享受</el-radio>
+                            <el-radio v-model="perferential" label="0">不享受</el-radio>
+                        </p>
+                        <p>
+                            是否促销:
+                            <br />
+                            <el-radio v-model="sale" label="1">是</el-radio>
+                            <el-radio v-model="sale" label="0">否</el-radio>
+                        </p>
+                        <p>
+                            商品简介:
+                            <el-input type="textarea" :rows="2" placeholder="请输入内容" v-model="introduce"></el-input>
+                            不超过200个汉字
+                        </p>
+                        <el-button type="success" @click="goods_add">添加</el-button>
+                    </div>
+                </el-card>
+            </el-main>
+            <!-- 右侧尾部 -->
+            <el-footer>
+                &copy; Copyright 2018 华联超市管理系统
+            </el-footer>
+        </el-container>
+    </div>
+
+    <!-- js -->
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                cateid: "",
+                options: [{
+                    value: '0',
+                    label: '顶级分类'
+                }],
+                code: "",
+                name: "",
+                costprice: "0",
+                num: "",
+                weight: "",
+                unit: "",
+                perferential: "1",
+                sale: "1",
+                introduce: ""
+            },
+            methods: {
+                goods_add: function () {
+                    var cateid = this.cateid;
+                    var code = this.code;
+                    var name = this.name;
+                    var saleprice = this.saleprice;
+                    var marketprice = this.marketprice;
+                    var costprice = this.costprice;
+                    var num = this.num;
+                    var weight = this.weight;
+                    var unit = this.unit;
+                    var perferential = this.perferential;
+                    var sale = this.sale;
+                    var introduce = this.introduce;
+                    //console.log(cateid,code,name,saleprice,marketprice,costprice,num,weight,unit,perferential,sale,introduce);
+                    //发起请求
+                    var xhr = new XMLHttpRequest();
+                    xhr.open("post", "/market/api/goods_add.php");
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === 4 && xhr.status === 200) {
+                            var data = JSON.parse(xhr.responseText);
+                            //console.log( typeof data,data);
+                            if (data === 1) {
+                                alert("添加成功");
+                                location.href = "/market/goods.html";
+                            } else {
+                                alert("添加失败");
+                            }
+                        }
+                    }
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send(`cateid=${cateid}&code=${code}&name=${name}&saleprice=${saleprice}&marketprice=${marketprice}&costprice=${costprice}&num=${num}&weight=${weight}&unit=${unit}&perferential=${perferential}&sale=${sale}&introduce=${introduce}`);
+
+                }
+            },
+            computed: {
+                saleprice: function () {
+                    return this.costprice * 10;
+                },
+                marketprice: function () {
+                    return this.costprice * 12;
+                },
+            },
+            mounted() {
+                //保存this
+                var _that = this;
+                //发起请求
+                var xhr = new XMLHttpRequest();
+                xhr.open("get", "/market/api/classify.php");
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState === 4 && xhr.status === 200) {
+                        var data = JSON.parse(xhr.responseText);
+                        //console.log(data);
+                        _that.options = _that.options.concat(data);
+                    }
+                }
+                xhr.send();
+            }
+        })
+    </script>
+
+
+</body>
+
+</html>

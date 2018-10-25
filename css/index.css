@@ -1,0 +1,31 @@
+html,body{height:100%;margin:0;padding:0;}
+#app,.el-container{height:100%;}
+
+/* 左边的样式 */
+.el-aside{background:#262626;color:#9E9D9D;text-align: right;padding-right: 10px;padding-left: 20px;}
+.el-aside a{text-decoration: none;color:#9E9D9D; }
+.el-menu {background: transparent;color: #fff;border: none;}
+.el-submenu__title {color: #fff;transition: none;background-color: #77b700;margin-top: 10px;height: 30px;line-height: 30px;border-radius: 4px;}
+.el-menu .el-submenu .el-submenu__title:hover {background:  #77b700;color: #eee;}
+.el-menu .el-submenu .el-menu-item a {color:#fff;text-decoration: none;}
+.el-menu .el-submenu ul li:hover {background: transparent;}
+
+/* 右边的样式 */
+
+.el-container .el-header p {color: #666;}
+
+.el-container .el-footer {
+    border-top: 1px solid #ccc;
+    line-height: 50px;
+    font-size: 12px;
+    color: #999;
+}
+.el-container .el-main .el-card__header {
+    font-size: 18px;
+    font-weight: bold;
+    background-color: #f5f5f5;
+    border-bottom: 1px solid #ccc;
+}
+.el-container .el-main .el-card {
+    border: 1px solid #ccc;
+}

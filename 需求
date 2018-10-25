@@ -1,0 +1,46 @@
+数据库设计：
+    数据库名字： market
+    create database market
+
+    1)账号管理的表的名字：admin
+    create table admin(
+        id int primary key auto_increment,
+        username varchar(20),
+        password varchar(50),
+        usergroup varchar(20)
+    );
+
+    插入数据：
+    insert into admin(username, password, usergroup) values ('admin', '123456', '超级管理员');
+    insert into admin(username, password, usergroup) values ('guest', '888888', '超级管理员');
+    
+    
+    2)分类管理的表的名字：classify
+    create table classify(
+        id int primary key auto_increment,
+        name varchar(20),
+        parentid int,
+        state int,
+        lever int
+    );
+    lever int//层级(设置数据与数据之间的关系)
+    
+    3)商品管理的表的名字：goods
+    create table goods(
+        id int primary key auto_increment,
+        cateid varchar(20),
+        code varchar(20),
+        name varchar(20),
+        saleprice int,
+        marketprice int,
+        costprice int,
+        num int,
+        weight varchar(30),
+        unit varchar(20),
+        perferential int,
+        sale int,
+        introduce text
+    );
+
+    //连表查询
+    select goods.*,classify.name as gname from goods,classify where goods.cateid=classify.id;
